@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Student {
+  id          String       @id @default(uuid())
+  name        String
+  schoolNo    String       @unique
+  hasCompleted Boolean     @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  examResults ExamResult[]
+
+  @@index([schoolNo])
+}
+
+model ExamResult {
+  id              String   @id @default(uuid())
+  studentId       String
+  student         Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  score           Int
+  totalQuestions  Int      @default(20)
+  correctAnswers  Int      @default(0)
+  startTime       DateTime
+  endTime         DateTime
+  timeSpent       Int      // in seconds
+  violations      Json     // {questionId, type, timestamp, autoSkipped}[]
+  answers         Json     // {questionId, selectedAnswer, isCorrect, skipped}[]
+  ipAddress       String?
+  userAgent       String?
+  createdAt       DateTime @default(now())
+
+  @@index([studentId])
+  @@index([createdAt])
+}
+
+model Question {
+  id              String   @id @default(uuid())
+  order           Int      @unique
+  type            String   // "video", "comparison", "matching", "multiple_choice"
+  category        String   // "Opera Seria", "Opera Buffa", "Opera Comique", "Grand Opera"
+  youtubeId       String?
+  youtubeId2      String?  // for comparison questions
+  question        String   @db.Text
+  options         Json     // ["option1", "option2", "option3", "option4"]
+  correctAnswer   String
+  explanation     String?  @db.Text
+  metadata        Json     // {composer, operaName, year, historicalPeriod}
+  timeLimit       Int      @default(120) // seconds
+  points          Int      @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([order])
+  @@index([category])
+}
