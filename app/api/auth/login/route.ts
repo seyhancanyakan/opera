@@ -41,14 +41,7 @@ export async function POST(request: NextRequest) {
 
       student = newStudent
     } else {
-      // Check if student has already completed the exam
-      if (student.hasCompleted) {
-        return NextResponse.json(
-          { error: 'Bu okul numarasıyla sınav zaten tamamlanmış. Sadece 1 deneme hakkınız var.' },
-          { status: 403 }
-        )
-      }
-
+      // No longer check hasCompleted - allow unlimited attempts
       // Update student name if different
       if (student.name !== name.trim()) {
         const { data: updatedStudent } = await supabaseAdmin

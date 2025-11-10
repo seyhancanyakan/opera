@@ -100,38 +100,63 @@ export default function ExamPage() {
   }, [isAnswered, handleNextQuestion])
 
   // Finish exam and submit results
+
   const finishExam = useCallback(async () => {
     if (!session) return
 
     const examEndTime = Date.now()
     const totalTimeSpent = Math.floor((examEndTime - examStartTime) / 1000)
     const correctAnswers = answers.filter(a => a.isCorrect).length
+    const score = Math.round((correctAnswers / 20) * 100)
 
-    try {
-      const response = await fetch('/api/exam/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          studentId: session.studentId,
-          answers,
-          violations: [],
-          totalTimeSpent,
-          correctAnswers,
-          examType: "calgilar"
-        })
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        sessionStorage.setItem('examResult', JSON.stringify(result))
-        router.push('/calgilar/results')
-      } else {
-        console.error('Failed to submit exam')
+    // Store temp result (not saved to DB yet)
+    const tempResult = {
+      score,
+      correctAnswers,
+      totalQuestions: 20,
+      tempData: {
+        studentId: session.studentId,
+        answers,
+        violations: [],
+        totalTimeSpent,
+        correctAnswers
       }
-    } catch (err) {
-      console.error('Submit error:', err)
     }
+
+    sessionStorage.setItem('tempExamResult', JSON.stringify(tempResult))
+    router.push('/calgilar/results')
   }, [session, answers, examStartTime, router])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   if (!session || !currentQuestion) {
     return (

@@ -113,7 +113,7 @@ export default function CalgilarLogin() {
           <ul className="text-sm text-yellow-700 space-y-1">
             <li>• Sınav süresi: 20 soru × 1 dakika = 20 dakika</li>
             <li>• Her soru 5 puan değerinde</li>
-            <li>• Sadece 1 deneme hakkınız var</li>
+            <li>• 60+ puan alana kadar sınırsız deneme hakkınız var</li>
             <li>• Toplam 100 puan üzerinden değerlendirilir</li>
           </ul>
         </div>

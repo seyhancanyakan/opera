@@ -2,92 +2,82 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { operaQuestions } from '@/lib/questions'
 
-interface ExamResultData {
-  examResultId: string
+interface TempResult {
   score: number
   correctAnswers: number
   totalQuestions: number
-  violations: number
+  tempData: any
 }
 
-export default function ResultsPage() {
+export default function OperaResults() {
   const router = useRouter()
-  const [result, setResult] = useState<ExamResultData | null>(null)
-  const [answers, setAnswers] = useState<any[]>([])
-  const [violations, setViolations] = useState<any[]>([])
-  const [studentInfo, setStudentInfo] = useState<any>(null)
+  const [result, setResult] = useState<TempResult | null>(null)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    // Load result from sessionStorage
-    const resultData = sessionStorage.getItem('examResult')
-    const sessionData = sessionStorage.getItem('examSession')
-
-    if (!resultData || !sessionData) {
+    const tempResult = sessionStorage.getItem('tempExamResult')
+    if (!tempResult) {
       router.push('/')
       return
     }
 
     try {
-      const parsedResult = JSON.parse(resultData)
-      const parsedSession = JSON.parse(sessionData)
-
-      setResult(parsedResult)
-      setStudentInfo(parsedSession)
-
-      // Get answers and violations from session
-      // In a real app, you'd fetch this from the API
+      setResult(JSON.parse(tempResult))
     } catch (err) {
-      console.error('Error loading results:', err)
       router.push('/')
     }
   }, [router])
 
-  if (!result || !studentInfo) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4" />
-          <p className="text-gray-600">Sonuçlar yükleniyor...</p>
-        </div>
-      </div>
-    )
+  const handleSave = async () => {
+    if (!result) return
+
+    setSaving(true)
+    try {
+      const response = await fetch('/api/exam/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(result.tempData)
+      })
+
+      if (response.ok) {
+        sessionStorage.removeItem('tempExamResult')
+        alert('Sınav sonucunuz kaydedildi!')
+        router.push('/')
+      } else {
+        alert('Kaydetme başarısız')
+      }
+    } catch (err) {
+      alert('Bir hata oluştu')
+    } finally {
+      setSaving(false)
+    }
   }
+
+  const handleRetry = () => {
+    sessionStorage.removeItem('tempExamResult')
+    sessionStorage.removeItem('examSession')
+    router.push('/calgilar/login')
+  }
+
+  if (!result) return null
 
   const percentage = result.score
   const isPassed = percentage >= 60
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Main Result Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Sınav Sonucu</h1>
-            <p className="text-gray-600">{studentInfo.studentName} - {studentInfo.schoolNo}</p>
-          </div>
-
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-indigo-900 py-12 px-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Score Circle */}
-          <div className="flex justify-center mb-8">
-            <div className="relative">
+          <div className="text-center mb-8">
+            <div className="relative inline-block">
               <svg className="w-48 h-48 transform -rotate-90">
+                <circle cx="96" cy="96" r="88" stroke="#e5e7eb" strokeWidth="12" fill="none" />
                 <circle
-                  cx="96"
-                  cy="96"
-                  r="88"
-                  stroke="#e5e7eb"
-                  strokeWidth="12"
-                  fill="none"
-                />
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="88"
+                  cx="96" cy="96" r="88"
                   stroke={isPassed ? '#10b981' : '#ef4444'}
-                  strokeWidth="12"
-                  fill="none"
+                  strokeWidth="12" fill="none"
                   strokeDasharray={`${(percentage / 100) * 553} 553`}
                   strokeLinecap="round"
                   className="transition-all duration-1000"
@@ -97,105 +87,68 @@ export default function ResultsPage() {
                 <span className={`text-5xl font-bold ${isPassed ? 'text-green-600' : 'text-red-600'}`}>
                   {percentage}
                 </span>
-                <span className="text-gray-600 text-sm">Puan</span>
+                <span className="text-gray-600 text-sm">/ 100</span>
               </div>
             </div>
           </div>
 
           {/* Status */}
-          <div className={`text-center mb-8 p-4 rounded-lg ${isPassed ? 'bg-green-50 border-2 border-green-200' : 'bg-red-50 border-2 border-red-200'}`}>
-            <p className={`text-2xl font-bold ${isPassed ? 'text-green-700' : 'text-red-700'}`}>
+          <div className={`text-center mb-8 p-6 rounded-xl ${isPassed ? 'bg-green-50' : 'bg-red-50'}`}>
+            <p className={`text-3xl font-bold mb-2 ${isPassed ? 'text-green-700' : 'text-red-700'}`}>
               {isPassed ? '✓ BAŞARILI' : '✗ BAŞARISIZ'}
+            </p>
+            <p className="text-gray-600">
+              {isPassed
+                ? 'Tebrikler! Geçme notunu aldınız. Sonucu kaydedebilir veya daha yüksek puan için tekrar deneyebilirsiniz.'
+                : '60 puan altında kaldınız. Lütfen tekrar deneyin.'
+              }
             </p>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-blue-50 rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">
-                {result.correctAnswers}
-              </div>
-              <div className="text-sm text-gray-600">Doğru Cevap</div>
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="bg-blue-50 rounded-xl p-4 text-center">
+              <div className="text-3xl font-bold text-blue-600">{result.correctAnswers}</div>
+              <div className="text-sm text-gray-600">Doğru</div>
             </div>
-
-            <div className="bg-purple-50 rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">
+            <div className="bg-orange-50 rounded-xl p-4 text-center">
+              <div className="text-3xl font-bold text-orange-600">
                 {result.totalQuestions - result.correctAnswers}
               </div>
-              <div className="text-sm text-gray-600">Yanlış Cevap</div>
-            </div>
-
-            <div className="bg-orange-50 rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-orange-600 mb-2">
-                {result.violations}
-              </div>
-              <div className="text-sm text-gray-600">İhlal Sayısı</div>
+              <div className="text-sm text-gray-600">Yanlış</div>
             </div>
           </div>
 
-          {/* Violation Warning */}
-          {result.violations > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-              <h3 className="font-semibold text-yellow-800 mb-2">⚠️ İhlal Uyarısı</h3>
-              <p className="text-sm text-yellow-700">
-                Sınav sırasında {result.violations} adet ihlal tespit edildi. Bu ihlaller kamera kaybı,
-                başı çevirme veya sekme değiştirme girişimleri olabilir.
-              </p>
-            </div>
-          )}
+          {/* Actions */}
+          <div className="space-y-3">
+            {isPassed && (
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full py-4 bg-green-600 text-white rounded-xl font-semibold text-lg hover:bg-green-700 transition disabled:bg-gray-400"
+              >
+                {saving ? 'Kaydediliyor...' : '💾 Sınavı Kaydet ve Bitir'}
+              </button>
+            )}
 
-          {/* Category Breakdown */}
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Opera Türlerine Göre Başarı</h3>
-            <div className="space-y-3">
-              {['Opera Seria', 'Opera Buffa', 'Opera Comique', 'Grand Opera'].map((category) => {
-                const categoryQuestions = operaQuestions.filter(q => q.category === category)
-                const totalInCategory = categoryQuestions.length
+            <button
+              onClick={handleRetry}
+              className={`w-full py-4 rounded-xl font-semibold text-lg transition ${
+                isPassed
+                  ? 'bg-purple-600 text-white hover:bg-purple-700'
+                  : 'bg-red-600 text-white hover:bg-red-700'
+              }`}
+            >
+              {isPassed ? '🔄 Daha Yüksek Puan İçin Tekrar Dene' : '🔄 Tekrar Dene (60+ Almalısınız)'}
+            </button>
 
-                // In a real app, calculate correct answers from actual data
-                // For demo, using random values
-                const correctInCategory = Math.floor(Math.random() * (totalInCategory + 1))
-                const categoryPercentage = Math.round((correctInCategory / totalInCategory) * 100)
-
-                return (
-                  <div key={category} className="flex items-center gap-4">
-                    <span className="w-40 text-sm font-medium text-gray-700">{category}</span>
-                    <div className="flex-1 bg-gray-200 rounded-full h-4 overflow-hidden">
-                      <div
-                        className="h-full bg-purple-500 transition-all duration-500"
-                        style={{ width: `${categoryPercentage}%` }}
-                      />
-                    </div>
-                    <span className="w-16 text-sm text-gray-600 text-right">
-                      {correctInCategory}/{totalInCategory}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
+            <button
+              onClick={() => router.push('/')}
+              className="w-full py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition"
+            >
+              Ana Menüye Dön
+            </button>
           </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-4 justify-center">
-          <button
-            onClick={() => window.print()}
-            className="px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-50 transition"
-          >
-            Sonuçları Yazdır
-          </button>
-          <button
-            onClick={() => router.push('/')}
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition"
-          >
-            Ana Sayfaya Dön
-          </button>
-        </div>
-
-        {/* Footer Note */}
-        <div className="mt-8 text-center text-white text-sm opacity-75">
-          <p>Sonuçlarınız sistemde kaydedilmiştir.</p>
-          <p className="mt-1">Bu sınav sadece 1 kez alınabilir.</p>
         </div>
       </div>
     </div>

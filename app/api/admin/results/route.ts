@@ -13,7 +13,6 @@ export async function GET() {
         totalQuestions,
         endTime,
         timeSpent,
-        examType,
         answers,
         studentId,
         Student (

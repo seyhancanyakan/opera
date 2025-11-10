@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         answers,
         ipAddress,
         userAgent,
-        examType: examType || 'opera'
+        
       })
       .select()
       .single()
