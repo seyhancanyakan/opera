@@ -116,7 +116,8 @@ export default function ExamPage() {
           answers,
           violations: [],
           totalTimeSpent,
-          correctAnswers
+          correctAnswers,
+          examType: "opera"
         })
       })
 

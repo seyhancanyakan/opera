@@ -21,8 +21,6 @@ export default function QuestionTimer({ duration, isActive, onTimeUp }: Question
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(interval)
-          onTimeUp()
           return 0
         }
         return prev - 1
@@ -30,7 +28,13 @@ export default function QuestionTimer({ duration, isActive, onTimeUp }: Question
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isActive, onTimeUp])
+  }, [isActive])
+
+  useEffect(() => {
+    if (timeLeft === 0 && isActive) {
+      onTimeUp()
+    }
+  }, [timeLeft, isActive, onTimeUp])
 
   const minutes = Math.floor(timeLeft / 60)
   const seconds = timeLeft % 60

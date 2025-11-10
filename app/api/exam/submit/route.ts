@@ -4,7 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { studentId, answers, violations, totalTimeSpent, correctAnswers } = body
+    const { studentId, answers, violations, totalTimeSpent, correctAnswers, examType } = body
 
     if (!studentId) {
       return NextResponse.json({ error: 'Student ID gerekli' }, { status: 400 })
@@ -35,7 +35,8 @@ export async function POST(request: NextRequest) {
         violations,
         answers,
         ipAddress,
-        userAgent
+        userAgent,
+        examType: examType || 'opera'
       })
       .select()
       .single()

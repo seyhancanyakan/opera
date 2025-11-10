@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Fetch all exam results with student info
     const { data: results, error } = await supabaseAdmin
@@ -13,6 +13,8 @@ export async function GET(request: NextRequest) {
         totalQuestions,
         endTime,
         timeSpent,
+        examType,
+        answers,
         studentId,
         Student (
           name,
@@ -27,17 +29,19 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data for frontend
-    const formattedResults = results.map(result => ({
+    const formattedResults = (results as any[]).map((result: any) => ({
       id: result.id,
       student: {
-        name: result.Student.name,
-        schoolNo: result.Student.schoolNo
+        name: result.Student?.name || 'Unknown',
+        schoolNo: result.Student?.schoolNo || 'N/A'
       },
       score: result.score,
       correctAnswers: result.correctAnswers,
       totalQuestions: result.totalQuestions,
       endTime: result.endTime,
-      timeSpent: result.timeSpent
+      timeSpent: result.timeSpent,
+      examType: result.examType || 'opera',
+      answers: result.answers || []
     }))
 
     return NextResponse.json({ results: formattedResults })
