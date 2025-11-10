@@ -1,10 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { QuestionData } from '@/lib/questions'
 
 interface QuestionProps {
-  question: QuestionData
+  question: {
+    order: number
+    category: string
+    question: string
+    options: string[]
+    metadata?: any
+  }
   onAnswer: (answer: string) => void
   isAnswered: boolean
 }

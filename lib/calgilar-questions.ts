@@ -7,6 +7,13 @@ export interface CalgilarQuestionData {
   options: string[]
   correctAnswer: string
   explanation?: string
+  metadata?: {
+    composer?: string
+    operaName?: string
+    year?: string
+    historicalPeriod?: string
+    topic?: string
+  }
   timeLimit: number
   points: number
 }
