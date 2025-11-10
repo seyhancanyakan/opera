@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { operaQuestions } from '@/lib/questions'
 import { calgilarQuestions } from '@/lib/calgilar-questions'
+import jsPDF from 'jspdf'
 
 interface StudentResult {
   id: string
@@ -73,6 +74,54 @@ export default function AdminPanel() {
   const viewDetails = (result: StudentResult) => {
     setSelectedResult(result)
     setShowDetails(true)
+  }
+
+  const exportToPDF = (result: StudentResult) => {
+    const doc = new jsPDF()
+    const questions = result.examType === 'opera' ? operaQuestions : calgilarQuestions
+
+    // Header
+    doc.setFontSize(20)
+    doc.text('Sinav Sonuc Raporu', 105, 20, { align: 'center' })
+
+    doc.setFontSize(12)
+    doc.text(`Ad Soyad: ${result.student.name}`, 20, 35)
+    doc.text(`Okul No: ${result.student.schoolNo}`, 20, 42)
+    doc.text(`Puan: ${result.score} / 100`, 20, 49)
+    doc.text(`Dogru: ${result.correctAnswers} / ${result.totalQuestions}`, 20, 56)
+    doc.text(`Tarih: ${new Date(result.endTime).toLocaleString('tr-TR')}`, 20, 63)
+
+    // Questions
+    let yPos = 75
+    doc.setFontSize(10)
+
+    result.answers.forEach((answer: any, idx: number) => {
+      const question = questions.find(q => q.order === answer.questionOrder)
+
+      if (yPos > 270) {
+        doc.addPage()
+        yPos = 20
+      }
+
+      doc.setFont('helvetica', answer.isCorrect ? 'bold' : 'normal')
+      doc.text(`${idx + 1}. ${answer.isCorrect ? 'DOGRU' : 'YANLIS'}`, 20, yPos)
+      yPos += 7
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(9)
+      const questionText = doc.splitTextToSize(question?.question || '', 170)
+      doc.text(questionText, 20, yPos)
+      yPos += questionText.length * 5 + 3
+
+      doc.text(`Ogrenci Cevabi: ${answer.selectedAnswer || 'Cevapsiz'}`, 25, yPos)
+      yPos += 5
+      doc.text(`Dogru Cevap: ${question?.correctAnswer}`, 25, yPos)
+      yPos += 10
+
+      doc.setFontSize(10)
+    })
+
+    doc.save(`${result.student.name}-${result.student.schoolNo}-sinav.pdf`)
   }
 
   const filteredResults = results.filter(r => r.examType === activeTab)
@@ -330,7 +379,7 @@ export default function AdminPanel() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setShowDetails(false)}>
             <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="sticky top-0 bg-white border-b p-6">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start mb-4">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-800">Sınav Detayları</h2>
                     <p className="text-gray-600">{selectedResult.student.name} - {selectedResult.student.schoolNo}</p>
@@ -342,6 +391,12 @@ export default function AdminPanel() {
                     ×
                   </button>
                 </div>
+                <button
+                  onClick={() => exportToPDF(selectedResult)}
+                  className="w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+                >
+                  📄 PDF İndir
+                </button>
               </div>
 
               <div className="p-6">
