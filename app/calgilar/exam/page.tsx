@@ -107,24 +107,32 @@ export default function ExamPage() {
     const examEndTime = Date.now()
     const totalTimeSpent = Math.floor((examEndTime - examStartTime) / 1000)
     const correctAnswers = answers.filter(a => a.isCorrect).length
-    const score = Math.round((correctAnswers / 20) * 100)
 
-    // Store temp result (not saved to DB yet)
-    const tempResult = {
-      score,
-      correctAnswers,
-      totalQuestions: 20,
-      tempData: {
-        studentId: session.studentId,
-        answers,
-        violations: [],
-        totalTimeSpent,
-        correctAnswers
+    // Save to database immediately
+    try {
+      const response = await fetch('/api/exam/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: session.studentId,
+          answers,
+          violations: [],
+          totalTimeSpent,
+          correctAnswers
+        })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        sessionStorage.setItem('examResult', JSON.stringify(result))
+        router.push('/calgilar/results')
+      } else {
+        alert('Sınav kaydedilemedi')
       }
+    } catch (err) {
+      console.error('Submit error:', err)
+      alert('Bir hata oluştu')
     }
-
-    sessionStorage.setItem('tempExamResult', JSON.stringify(tempResult))
-    router.push('/calgilar/results')
   }, [session, answers, examStartTime, router])
 
 
