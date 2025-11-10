@@ -111,8 +111,6 @@ export default function OperaLogin() {
         <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <h3 className="font-semibold text-yellow-800 mb-2">Önemli Uyarılar:</h3>
           <ul className="text-sm text-yellow-700 space-y-1">
-            <li>• Sınav süresi: 20 soru × 1 dakika = 20 dakika</li>
-            <li>• Her soru 60 saniye süreniz var</li>
             <li>• 60+ puan alana kadar sınırsız deneme hakkınız var</li>
             <li>• Toplam 100 puan üzerinden değerlendirilir</li>
           </ul>
