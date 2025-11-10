@@ -93,7 +93,7 @@ export default function Home() {
 
         {/* Footer Info */}
         <div className="mt-12 text-center text-white text-sm opacity-75">
-          <p>Sınavlar sadece 1 kez alınabilir</p>
+          <p>Her deneme kaydedilir - sınırsız tekrar hakkı</p>
           <p className="mt-2">Her sınav için Ad ve Okul Numarası gereklidir</p>
         </div>
 
