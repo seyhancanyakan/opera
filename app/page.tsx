@@ -96,6 +96,16 @@ export default function Home() {
           <p>Sınavlar sadece 1 kez alınabilir</p>
           <p className="mt-2">Her sınav için Ad ve Okul Numarası gereklidir</p>
         </div>
+
+        {/* Admin Panel Link */}
+        <div className="mt-8 text-center">
+          <button
+            onClick={() => router.push('/admin')}
+            className="px-6 py-3 bg-white bg-opacity-20 text-white rounded-lg font-semibold hover:bg-opacity-30 transition backdrop-blur-sm"
+          >
+            👨‍🏫 Öğretmen Paneli
+          </button>
+        </div>
       </div>
     </div>
   )
