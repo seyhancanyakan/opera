@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import QuestionTimer from '@/components/QuestionTimer'
 import Question from '@/components/Question'
-import { operaQuestions } from '@/lib/questions'
+import { calgilarQuestions } from '@/lib/calgilar-questions'
 import { ExamSession, Answer } from '@/types'
 
 export default function ExamPage() {
@@ -33,7 +33,7 @@ export default function ExamPage() {
     }
   }, [router])
 
-  const currentQuestion = operaQuestions[currentQuestionIndex]
+  const currentQuestion = calgilarQuestions[currentQuestionIndex]
 
   // Handle answer submission
   const handleAnswer = useCallback((selectedAnswer: string) => {
@@ -82,7 +82,7 @@ export default function ExamPage() {
     }
 
     // Move to next question or finish exam
-    if (currentQuestionIndex < operaQuestions.length - 1) {
+    if (currentQuestionIndex < calgilarQuestions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1)
       setIsAnswered(false)
       setQuestionStartTime(Date.now())
@@ -123,7 +123,7 @@ export default function ExamPage() {
       if (response.ok) {
         const result = await response.json()
         sessionStorage.setItem('examResult', JSON.stringify(result))
-        router.push('/results')
+        router.push('/calgilar/results')
       } else {
         console.error('Failed to submit exam')
       }
@@ -149,7 +149,7 @@ export default function ExamPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Opera Türleri Sınavı</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Okul Çalgıları Sınavı</h1>
           <p className="text-gray-600">{session.studentName} - {session.schoolNo}</p>
         </div>
 
@@ -174,7 +174,7 @@ export default function ExamPage() {
           <div className="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-md">
             <span className="text-gray-600">İlerleme:</span>
             <span className="font-bold text-purple-600">
-              {currentQuestionIndex + 1} / {operaQuestions.length}
+              {currentQuestionIndex + 1} / {calgilarQuestions.length}
             </span>
           </div>
         </div>

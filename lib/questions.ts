@@ -38,7 +38,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Opera bilgisi'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 2,
@@ -58,7 +58,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Tarihçe'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 3,
@@ -80,7 +80,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Besteci ve opera bilgisi'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 4,
@@ -102,7 +102,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Opera tanıma'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 5,
@@ -121,7 +121,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Özellik eşleştirme'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
 
   // OPERA BUFFA (5 Questions)
@@ -141,7 +141,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Opera kaynağı'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 7,
@@ -161,7 +161,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Tarihçe ve gelişim'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 8,
@@ -183,7 +183,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Besteci bilgisi'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 9,
@@ -205,7 +205,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Ünlü opera bilgisi'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 10,
@@ -224,7 +224,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Karşılaştırma'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
 
   // OPERA COMIQUE (5 Questions)
@@ -244,7 +244,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Opera karakteri'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 12,
@@ -264,7 +264,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Tarihçe'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 13,
@@ -286,7 +286,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Besteci bilgisi'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 14,
@@ -308,7 +308,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Ünlü opera bilgisi'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 15,
@@ -327,7 +327,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Özellik eşleştirme'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
 
   // GRAND OPERA (5 Questions)
@@ -344,7 +344,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Grand Opera özellikleri'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 17,
@@ -364,7 +364,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Tarihçe'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 18,
@@ -384,7 +384,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Besteci bilgisi'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 19,
@@ -406,7 +406,7 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Opera türü tanıma'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   },
   {
     order: 20,
@@ -425,6 +425,6 @@ export const operaQuestions: QuestionData[] = [
       topic: 'Özellik eşleştirme'
     },
     timeLimit: 60,
-    points: 1
+    points: 5
   }
 ]
