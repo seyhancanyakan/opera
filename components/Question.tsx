@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface QuestionProps {
   question: {
@@ -16,6 +16,13 @@ interface QuestionProps {
 
 export default function Question({ question, onAnswer, isAnswered }: QuestionProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
+  const [shuffledOptions, setShuffledOptions] = useState<string[]>([])
+
+  // Shuffle options when question changes
+  useEffect(() => {
+    const shuffled = [...question.options].sort(() => Math.random() - 0.5)
+    setShuffledOptions(shuffled)
+  }, [question.order])
 
   const handleSelectAnswer = (answer: string) => {
     if (isAnswered) return
@@ -50,7 +57,7 @@ export default function Question({ question, onAnswer, isAnswered }: QuestionPro
 
       {/* Options */}
       <div className="space-y-3 mb-8">
-        {question.options.map((option, index) => {
+        {(shuffledOptions.length > 0 ? shuffledOptions : question.options).map((option, index) => {
           const isSelected = selectedAnswer === option
           const letter = String.fromCharCode(65 + index) // A, B, C, D
 

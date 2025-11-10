@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import QuestionTimer from '@/components/QuestionTimer'
 import Question from '@/components/Question'
 import { operaQuestions } from '@/lib/questions'
 import { ExamSession, Answer } from '@/types'
@@ -92,6 +93,11 @@ export default function ExamPage() {
   }, [currentQuestion, isAnswered, currentQuestionIndex, questionStartTime])
 
   // Handle time up
+  const handleTimeUp = useCallback(() => {
+    if (!isAnswered) {
+      handleNextQuestion(true)
+    }
+  }, [isAnswered, handleNextQuestion])
 
   // Finish exam and submit results
   const finishExam = useCallback(async () => {
@@ -141,6 +147,12 @@ export default function ExamPage() {
           <p className="text-gray-600">{session.studentName} - {session.schoolNo}</p>
         </div>
 
+        {/* Timer */}
+        <div className="mb-8">
+          <QuestionTimer
+            duration={currentQuestion.timeLimit}
+            isActive={!isAnswered}
+            onTimeUp={handleTimeUp}
           />
         </div>
 
